@@ -83,3 +83,7 @@ with send_email('....')
     bucket.is_awesome()
     ....
 ```
+
+All demo should be terraformed to make it enabled quickly.
+
+All code should have unittests. Not much time for now :)
