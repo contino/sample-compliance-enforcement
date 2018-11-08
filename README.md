@@ -61,3 +61,25 @@ It is quite trivial to run it. Load your AWS keys on a console and then run ;
 ```
 
 Viola.
+
+# Running the DEMO
+
+The `tests` directorey has some terraform files that you can run for DEMOing to a customer. It creates two S3 Buckets, one encrypted, one not encrypted.
+
+When you make everything correctly. Whenever you `apply` this terraform, you should have an email ( that you validated through AWS SES ) one of the buckets ( the one that is unencrypted ) is failing the validation.
+
+# Further thoughts
+
+It is quite easy to add more checks like if the bucket `acl` is private, if the `kms` key that is used is a custom one, etc. These can be added as more checks in the `bucket.py` and a list of validation could be send to the user.
+
+Also, better to have a generic class for these checking and have a code style like in inspec, for e.g.
+
+```python
+bucket = Obj(bucket_name)
+
+with send_email('....')
+    bucket.is_encrypted()
+    bucket.is_private()
+    bucket.is_awesome()
+    ....
+```
