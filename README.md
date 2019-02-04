@@ -4,10 +4,10 @@ This repository includes a sample compliance enforcement by using AWS Lambda.
 
 ## Story
 
-```
+```cucumber
 GIVEN I have an S3 Bucket Created
-When the encryption is not set
-Then notify me via email
+WHEN the encryption is not set
+THEN notify me via email
 ```
 
 ## Background
