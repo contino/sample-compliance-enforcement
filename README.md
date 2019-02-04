@@ -4,8 +4,8 @@ This repository includes a sample compliance enforcement by using AWS Lambda.
 
 ## Story
 
-```
-GIVEN I have an S3 Bucket Created
+```cucumber
+Given I have an S3 Bucket Created
 When the encryption is not set
 Then notify me via email
 ```
