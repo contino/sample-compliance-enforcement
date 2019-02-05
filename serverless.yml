@@ -1,37 +1,46 @@
 
-service: s3-enc-enforce
+service: s3-bucket-validations
+
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   region: eu-west-1
-
-# Not sure why this didn't work :(
-#
-# iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-#    - Effect: "Allow"
-#      Action:
-#        - "ses:SendEmail"
-#        - "ses:SendRawEmail"
-#      Resource:
-#          - "arn:aws:ses:eu-west-1::identity/emre@contino.io"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - "Ref" : "ServerlessDeploymentBucket"
+            - "/*"
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+      Resource:
+          # Be sure that your SNS Topic is named correctly.
+          - "arn:aws:ses:::account-activity-notifications"
 
 functions:
-  enforce:
+  bucket-validation:
     handler: src.handler.main
+    description: General S3 Bucket Validation Lambda Function]
+    timeout: 30
     events:
       - s3:
         bucket: "*"
         event: s3:createBucket:*
+    package:
+      include:
+        - src/**
+      exclude:
+        - tests/**
+        - .git/**
+        - README.md
+        - LICENSE
+        - .gitignore

@@ -1,6 +1,10 @@
 import boto3
 from botocore.exceptions import ClientError
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# TO-DO: Use SNS instead
 
 def send_email_via_ses(message):
     sender = "Emre Erkunt <emre@contino.io>"

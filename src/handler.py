@@ -1,6 +1,9 @@
 import json
 from src.email import send_email_via_ses
-from src.bucket import check_bucket_encryption
+from src.bucket import Bucket
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def main(event, context):
@@ -13,15 +16,17 @@ def main(event, context):
         print('Unable to get bucket name!')
         return
 
-    validation, message = check_bucket_encryption(bucket_name)
+    bucket = Bucket(bucket_name)
+    bucket.is_encrypted()
+    bucket.is_private()
 
-    if validation is False:
-        print('Bucket validation failure for {}. Sending email.'.format(bucket_name))
+    if False in bucket.results:
+        logger.info('Bucket validation failure for {}. Triggering SNS.'.format(bucket_name))
         text = "Bucket validation failure for {}. Here are the results :\n\n" \
-            "{}\n".format(bucket_name, "\n * ".join(message))
+            "{}\n".format(bucket_name, "\n * ".join(bucket.messages))
 
         send_email_via_ses(text)
         return
 
-    print('All validations passed for {} S3 bucket.'.format(bucket_name))
-    print('******************************')
+    logger.info('All validations passed for {} S3 bucket.'.format(bucket_name))
+    logger.info('******************************')
