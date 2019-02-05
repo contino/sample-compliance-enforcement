@@ -1,9 +1,9 @@
-import json
-from src.email import send_email_via_ses
+from src.sns import Sns
 from src.bucket import Bucket
+from logging import getLogger, INFO
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = getLogger()
+logger.setLevel(INFO)
 
 
 def main(event, context):
@@ -20,13 +20,17 @@ def main(event, context):
     bucket.is_encrypted()
     bucket.is_private()
 
+    logger.info('Validation Results: {}'.format(bucket.results))
+
     if False in bucket.results:
         logger.info('Bucket validation failure for {}. Triggering SNS.'.format(bucket_name))
-        text = "Bucket validation failure for {}. Here are the results :\n\n" \
-            "{}\n".format(bucket_name, "\n * ".join(bucket.messages))
 
-        send_email_via_ses(text)
-        return
+        # This is for PoC purposes only, ARN needs to be discovered within the region, but it will also require
+        # more IAM permissions to do that for now.
+        sns = Sns(arn='arn:aws:sns:eu-west-1:380857268437:account-activity-notifications')
+        sns.add_message(bucket.messages)
+        sns.publish()
+        return False
 
     logger.info('All validations passed for {} S3 bucket.'.format(bucket_name))
     logger.info('******************************')

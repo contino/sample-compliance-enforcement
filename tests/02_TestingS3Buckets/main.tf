@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "unencrypted_s3_bucket" {
-  bucket = "20181108-unencrypted-s3-bucket"
+  bucket = "20190205-unencrypted-s3-bucket"
   region = "eu-west-1"
 
   versioning {
@@ -13,7 +13,7 @@ resource "aws_kms_key" "custom_kms_key" {
 }
 
 resource "aws_s3_bucket" "encrypted_s3_bucket" {
-  bucket = "20181108-encrypted-s3-bucket"
+  bucket = "20190205-encrypted-s3-bucket"
   region = "eu-west-1"
 
   versioning {

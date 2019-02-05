@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "account-cloudtrail-events" {
               "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::tf-test-trail/*",
+            "Resource": "arn:aws:s3:::account-cloudtrail-events/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"

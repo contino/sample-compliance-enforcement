@@ -1,8 +1,9 @@
 from boto3 import client
 from botocore.exceptions import ClientError
+from logging import getLogger, INFO
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = getLogger()
+logger.setLevel(INFO)
 
 
 class Bucket(object):
@@ -14,9 +15,9 @@ class Bucket(object):
         self.messages = []
 
     def _return(self, result, message):
-        self.messages.extend(message)
+        self.messages.append(message)
         logger.info(message)
-        self.results.extend(message)
+        self.results.append(result)
 
     def is_encrypted(self):
         logger.info('Checking if {} S3 Bucket is encrypted.'.format(self.bucket_name))

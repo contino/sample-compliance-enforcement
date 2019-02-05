@@ -21,10 +21,28 @@ provider:
             - "/*"
     - Effect: "Allow"
       Action:
-        - "sns:Publish"
+        - "SNS:Publish"
       Resource:
-          # Be sure that your SNS Topic is named correctly.
-          - "arn:aws:ses:::account-activity-notifications"
+          # Be sure that your SNS Topic is named correctly. It is defined in terraform as account-activity-notifications
+          - "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:Get*"
+      Resource:
+        - "arn:aws:s3:::*"
+
+package:
+  include:
+    - src/**
+  exclude:
+    - tests/**
+    - tests/**/.terraform/**
+    - .git/**
+    - README.md
+    - LICENSE
+    - .gitignore
+    - .idea/**
+    - .vscode/**
 
 functions:
   bucket-validation:
@@ -32,15 +50,9 @@ functions:
     description: General S3 Bucket Validation Lambda Function]
     timeout: 30
     events:
-      - s3:
-        bucket: "*"
-        event: s3:createBucket:*
-    package:
-      include:
-        - src/**
-      exclude:
-        - tests/**
-        - .git/**
-        - README.md
-        - LICENSE
-        - .gitignore
+      - cloudwatchEvent:
+        event:
+          source:
+            - "aws:s3"
+          name:
+            - "CreateBucket"
