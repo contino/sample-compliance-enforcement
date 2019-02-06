@@ -27,7 +27,8 @@ def main(event, context):
 
         # This is for PoC purposes only, ARN needs to be discovered within the region, but it will also require
         # more IAM permissions to do that for now.
-        sns = Sns(arn='arn:aws:sns:eu-west-1:380857268437:account-activity-notifications')
+        account_id = boto3.client('sts').get_caller_identity().get('Account')
+        sns = Sns(arn='arn:aws:sns:eu-west-1:{}:account-activity-notifications'.format(account_id))
         sns.add_message(bucket.messages)
         sns.publish()
         return False
