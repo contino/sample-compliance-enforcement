@@ -11,8 +11,9 @@ class Sns(object):
         self.arn = arn
         self.message = [
             '*****************************************',
-            'Bucket validation failure:',
-            'Here are the results :\n\n'
+            'Bucket validation failure !',
+            'WARNING: Bucket ACL for this bucket changed to PRIVATE. You will not have a problem with your terraform state, but it is better to update it soon.',
+            'Here are the bucket checks :\n\n'
         ]
 
     def _print_message(self):
