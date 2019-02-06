@@ -1,6 +1,7 @@
 from enforce.sns import Sns
 from enforce.bucket import Bucket
 from logging import getLogger, INFO
+import boto3
 
 logger = getLogger()
 logger.setLevel(INFO)
