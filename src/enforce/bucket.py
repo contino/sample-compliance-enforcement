@@ -39,7 +39,7 @@ class Bucket(object):
                 return False
 
     def set_encrypted(self):
-        logger.info('Changed bucket encryption for {} to ENABLED. [NOT IMPLEMENTED YET]')
+        logger.info('Changed bucket encryption for {} to ENABLED. [NOT IMPLEMENTED YET]'.format(self.bucket_name))
 
     def is_private(self):
         logger.info('Checking if {} S3 Bucket is private.'.format(self.bucket_name))
@@ -54,14 +54,19 @@ class Bucket(object):
 
         if private:
             self._return(False, 'Bucket Access for {}: Public'.format(self.bucket_name))
+
+            if self.auto_fix:
+                self.set_private()
+
             return False
 
         self._return(True, 'Bucket Access for {}: Private'.format(self.bucket_name))
 
-        if self.auto_fix:
-            self.set_private()
-
         return True
 
     def set_private(self):
-        logger.info('Changed bucket access for {} to PRIVATE. [NOT IMPLEMENTED YET]')
+        self.s3.put_bucket_acl(
+            Bucket=self.bucket_name,
+            ACL='private'
+        )
+        logger.info('Changed bucket access for {} to PRIVATE.'.format(self.bucket_name))

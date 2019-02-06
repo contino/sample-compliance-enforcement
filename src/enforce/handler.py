@@ -1,5 +1,5 @@
-from .sns import Sns
-from .bucket import Bucket
+from enforce.sns import Sns
+from enforce.bucket import Bucket
 from logging import getLogger, INFO
 
 logger = getLogger()
@@ -16,7 +16,7 @@ def main(event, context):
         print('Unable to get bucket name!')
         return
 
-    bucket = Bucket(bucket_name)
+    bucket = Bucket(bucket_name, auto_fix=True)
     bucket.is_encrypted()
     bucket.is_private()
 
