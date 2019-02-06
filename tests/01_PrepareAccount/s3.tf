@@ -1,5 +1,45 @@
+data "aws_iam_policy_document" "account-cloudtrail-events-bucket-policy-document" {
+  statement {
+    sid = "AWSCloudTrailAclCheck"
+    effect = "Allow"
+    principals {
+      identifiers = [ "cloudtrail.amazonaws.com" ]
+      type = "Service"
+    }
+    actions = [
+      "s3:GetBucketAcl",
+    ]
+
+    resources = [
+      "arn:aws:s3:::account-cloudtrail-events-${data.aws_caller_identity.current.account_id}"
+    ]
+  }
+
+  statement {
+    sid = "AWSCloudTrailWrite"
+    effect = "Allow"
+    principals {
+      identifiers = [ "cloudtrail.amazonaws.com" ]
+      type = "Service"
+    }
+    actions = [
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::account-cloudtrail-events-${data.aws_caller_identity.current.account_id}/*"
+    ]
+
+    condition {
+      test = "StringEquals"
+      values = ["bucket-owner-full-control"]
+      variable = "s3:x-amz-acl"
+    }
+  }
+}
+
 resource "aws_s3_bucket" "account-cloudtrail-events" {
-  bucket        = "${data.aws_caller_identity.current.account_id}-account-cloudtrail-events"
+  bucket        = "account-cloudtrail-events-${data.aws_caller_identity.current.account_id}"
   force_destroy = true
   acl = "private"
 
@@ -11,35 +51,9 @@ resource "aws_s3_bucket" "account-cloudtrail-events" {
       }
     }
   }
-
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AWSCloudTrailAclCheck",
-            "Effect": "Allow",
-            "Principal": {
-              "Service": "cloudtrail.amazonaws.com"
-            },
-            "Action": "s3:GetBucketAcl",
-            "Resource": "arn:aws:s3:::*account-cloudtrail-events"
-        },
-        {
-            "Sid": "AWSCloudTrailWrite",
-            "Effect": "Allow",
-            "Principal": {
-              "Service": "cloudtrail.amazonaws.com"
-            },
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::*account-cloudtrail-events/*",
-            "Condition": {
-                "StringEquals": {
-                    "s3:x-amz-acl": "bucket-owner-full-control"
-                }
-            }
-        }
-    ]
 }
-POLICY
+
+resource "aws_s3_bucket_policy" "account-cloudtrail-events-bucket-policy" {
+  bucket = "${aws_s3_bucket.account-cloudtrail-events.id}"
+  policy = "${data.aws_iam_policy_document.account-cloudtrail-events-bucket-policy-document.json}"
 }
