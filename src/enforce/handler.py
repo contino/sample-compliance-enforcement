@@ -1,5 +1,5 @@
-from src.sns import Sns
-from src.bucket import Bucket
+from .sns import Sns
+from .bucket import Bucket
 from logging import getLogger, INFO
 
 logger = getLogger()
