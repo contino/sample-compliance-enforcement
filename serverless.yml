@@ -1,37 +1,58 @@
 
-service: s3-enc-enforce
+service: s3-bucket-validations
+
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   region: eu-west-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - "Ref" : "ServerlessDeploymentBucket"
+            - "/*"
+    - Effect: "Allow"
+      Action:
+        - "SNS:Publish"
+      Resource:
+          # Be sure that your SNS Topic is named correctly. It is defined in terraform as account-activity-notifications
+          - "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:Get*"
+      Resource:
+        - "arn:aws:s3:::*"
 
-# Not sure why this didn't work :(
-#
-# iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
-#    - Effect: "Allow"
-#      Action:
-#        - "ses:SendEmail"
-#        - "ses:SendRawEmail"
-#      Resource:
-#          - "arn:aws:ses:eu-west-1::identity/emre@contino.io"
+package:
+  include:
+    - src/**
+  exclude:
+    - tests/**
+    - tests/**/.terraform/**
+    - .git/**
+    - README.md
+    - LICENSE
+    - .gitignore
+    - .idea/**
+    - .vscode/**
 
 functions:
-  enforce:
+  bucket-validation:
     handler: src.handler.main
+    description: General S3 Bucket Validation Lambda Function]
+    timeout: 30
     events:
-      - s3:
-        bucket: "*"
-        event: s3:createBucket:*
+      - cloudwatchEvent:
+        event:
+          source:
+            - "aws:s3"
+          name:
+            - "CreateBucket"

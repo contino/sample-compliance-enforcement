@@ -16,7 +16,9 @@ var/
 .installed.cfg
 *.egg
 *.pyc
-
+.idea
+.vscode
+**/*.tfstate*
 # Serverless directories
 .serverless
-tests/.terraform
+**/.terraform
