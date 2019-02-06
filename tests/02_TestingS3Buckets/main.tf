@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "unencrypted_private_s3_bucket" {
-  bucket = "20190205-unencrypted-private-s3-bucket"
+  bucket = "${data.aws_caller_identity.current.account_id}--unencrypted-private-s3-bucket"
   region = "eu-west-1"
   acl = "private"
 
@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "unencrypted_private_s3_bucket" {
 }
 
 resource "aws_s3_bucket" "unencrypted_public-rw_s3_bucket" {
-  bucket = "20190205-unencrypted-public-rw-s3-bucket"
+  bucket = "${data.aws_caller_identity.current.account_id}--unencrypted-public-rw-s3-bucket"
   region = "eu-west-1"
   acl = "public-read-write"
 
@@ -24,7 +24,7 @@ resource "aws_kms_key" "custom_kms_key" {
 }
 
 resource "aws_s3_bucket" "encrypted_public-read_s3_bucket" {
-  bucket = "20190205-encrypted-public-read-s3-bucket"
+  bucket = "${data.aws_caller_identity.current.account_id}--encrypted-public-read-s3-bucket"
   region = "eu-west-1"
   acl = "public-read"
 
@@ -43,7 +43,7 @@ resource "aws_s3_bucket" "encrypted_public-read_s3_bucket" {
 }
 
 resource "aws_s3_bucket" "encrypted_private_read_s3_bucket" {
-  bucket = "20190205-encrypted-private-read-s3-bucket"
+  bucket = "${data.aws_caller_identity.current.account_id}--encrypted-private-read-s3-bucket"
   region = "eu-west-1"
 
   versioning {

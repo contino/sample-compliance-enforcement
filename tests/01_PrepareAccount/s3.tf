@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "account-cloudtrail-events" {
-  bucket        = "account-cloudtrail-events"
+  bucket        = "${data.aws_caller_identity.current.account_id}-account-cloudtrail-events"
   force_destroy = true
   acl = "private"
 
