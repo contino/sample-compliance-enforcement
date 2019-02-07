@@ -16,7 +16,7 @@ resource "aws_cloudwatch_event_rule" "s3_bucket_create" {
     ],
     "eventName": [
       "CreateBucket",
-      "DeleteBucketPolicy"
+      "DeleteBucketPolicy",
       "PutBucketAcl",
       "PutBucketPublicAccessBlock"
     ]
