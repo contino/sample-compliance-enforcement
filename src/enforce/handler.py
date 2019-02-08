@@ -18,7 +18,7 @@ def main(event, context):
         return
 
     bucket = Bucket(bucket_name, auto_fix=True)
-    bucket.is_encrypted()
+    # bucket.is_encrypted()
     bucket.is_private()
 
     logger.info('Validation Results: {}'.format(bucket.results))

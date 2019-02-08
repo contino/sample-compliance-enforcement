@@ -1,8 +1,7 @@
 import boto3
-from logging import getLogger, INFO
+from logging import getLogger
 
 logger = getLogger()
-logger.setLevel(INFO)
 
 
 class Sns(object):
