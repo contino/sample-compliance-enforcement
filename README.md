@@ -64,3 +64,10 @@ within the exception list where they are ignored on any remediations.
 
 When there is at least 1 exception within this path, all ACCOUNT-WIDE Public Block Access remediations
 will be skipped.
+
+
+# Why there are some python libs within the `src/` folder ?
+
+That is because AWS Lambda in eu-west-1 does not have the latest `boto3` library that can access to
+`s3control` client. That's why we are embedding those within the lambda package. When AWS updates their
+Lambda stacks, then this can be removed.
