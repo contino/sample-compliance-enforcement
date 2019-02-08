@@ -46,6 +46,21 @@ This path includes a very simple terraform hcl files creating 4 different bucket
 3. Encrypted + Private
 4. Encrypted + Public
 
-Since current Lambda function checks for `Private/Public` and `Encrypted/Unencrypted` data,
-upon `terraform apply` you should have 3 different emails about the buckets listed above. 
-You should NOT have any email regarding to the 3rd bucket ( Encrypted + Private ).
+Since current Lambda function checks for `Private/Public` data,
+upon `terraform apply` you should have 2 different emails about the buckets listed above. 
+You should NOT have any email regarding to the private buckets.
+
+The code is also capable to check for encryption via `is_encrypted()` method, but there is no 
+remediation planned for now, since it may require some custom KMS stuff.
+
+## Remediations
+The code will remediate automatically the problematic buckets + the account if Public access is open.
+
+## Exception Bucket
+
+The code will also have a look on `/cf/security/s3-enforce/bucket_exceptions` path in SSM Parameter Store
+if there are any buckets are listed there (as comma separated). The reason having this is to have some buckets
+within the exception list where they are ignored on any remediations.
+
+When there is at least 1 exception within this path, all ACCOUNT-WIDE Public Block Access remediations
+will be skipped.
